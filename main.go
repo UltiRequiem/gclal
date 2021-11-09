@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/go-git/go-git/v5"
 	"github.com/google/go-github/github"
+	"sync"
 )
 
 func main() {
@@ -27,7 +29,24 @@ func main() {
 		fmt.Println(err)
 	}
 
+	var wg sync.WaitGroup
+
 	for _, repo := range repos {
-		fmt.Println(*repo.Name)
+		wg.Add(1)
+		go func(r *github.Repository, wg *sync.WaitGroup) {
+			defer wg.Done()
+			fmt.Printf("Cloning %s... \n", *r.Name)
+
+			_, err := git.PlainClone(*r.Name, false, &git.CloneOptions{URL: *r.GitURL})
+
+			if err != nil {
+				fmt.Printf("Error while cloning %s, killing the process", *r.GitURL)
+			}
+
+			fmt.Printf("%s cloned successfully\n", *r.Name)
+
+		}(repo, &wg)
 	}
+
+        wg.Wait()
 }
