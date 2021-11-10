@@ -35,7 +35,7 @@ func Init() {
 	for _, repo := range repos {
 		go func(r *github.Repository, wg *sync.WaitGroup) {
 			defer wg.Done()
-			cloneRepository(*r.Name, *r.GitURL)
+			cloneRepository(*r.GitURL, *r.Name)
 		}(repo, &wg)
 	}
 
