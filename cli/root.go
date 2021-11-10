@@ -2,9 +2,11 @@ package cli
 
 import (
 	"context"
+	"fmt"
+	"sync"
+
 	"github.com/fatih/color"
 	"github.com/google/go-github/github"
-	"sync"
 )
 
 func Init() {
@@ -30,9 +32,10 @@ func Init() {
 		return
 	}
 
-	var wg sync.WaitGroup
+	color.Green(fmt.Sprintf("About to clone %d repos.", len(repos)))
 
-	wg.Add(*user.PublicRepos)
+	var wg sync.WaitGroup
+	wg.Add(len(repos))
 
 	for _, repo := range repos {
 		go func(r *github.Repository, wg *sync.WaitGroup) {
