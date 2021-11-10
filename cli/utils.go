@@ -3,7 +3,6 @@ package cli
 import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
-	"os"
 )
 
 func cloneRepository(url, name string) {
@@ -14,7 +13,6 @@ func cloneRepository(url, name string) {
 	if err != nil {
 		fmt.Printf("Error while cloning %s, killing the process", url)
 		fmt.Println(err)
-		os.Exit(1)
 	}
 
 	fmt.Printf("%s cloned successfully\n", name)
