@@ -11,7 +11,7 @@ func cloneRepository(url, name string) {
 	_, err := git.PlainClone(name, false, &git.CloneOptions{URL: url})
 
 	if err != nil {
-		color.Red("Error while cloning %s: %s", url, err.Error())
+		color.Red(`Error while cloning %s: "%s".`, url, err.Error())
 		return
 	}
 
