@@ -1,3 +1,8 @@
 # gclal
 
-> *G*it *cl*one *al*l
+### FAQ
+
+- Why `gclal`?
+
+It was originally called `gclone_all`, but it seems too long to me so I took
+some letters out of it.

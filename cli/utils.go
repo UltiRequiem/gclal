@@ -14,7 +14,6 @@ func cloneRepository(url, name string) {
 	if err != nil {
 		fmt.Printf("Error while cloning %s, killing the process", url)
 		os.Exit(1)
-
 	}
 
 	fmt.Printf("%s cloned successfully\n", name)

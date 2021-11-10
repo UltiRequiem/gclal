@@ -30,8 +30,9 @@ func Init() {
 
 	var wg sync.WaitGroup
 
+	wg.Add(*user.PublicRepos)
+
 	for _, repo := range repos {
-		wg.Add(1)
 		go func(r *github.Repository, wg *sync.WaitGroup) {
 			defer wg.Done()
 			cloneRepository(*r.Name, *r.GitURL)
