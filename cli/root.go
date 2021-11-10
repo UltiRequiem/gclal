@@ -10,7 +10,12 @@ import (
 )
 
 func Init() {
-	username := "UltiRequiem"
+	username := getParams()
+
+	if username == "default" {
+		color.Blue("Please enter a username.")
+		return
+	}
 
 	client := github.NewClient(nil)
 
@@ -18,6 +23,11 @@ func Init() {
 
 	if error != nil {
 		color.Red(error.Error())
+		return
+	}
+
+	if *user.PublicRepos == 0 {
+		color.Green(fmt.Sprintf("No public repos found for user %s.", *user.Name))
 		return
 	}
 
