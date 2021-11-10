@@ -2,7 +2,7 @@ package cli
 
 import (
 	"context"
-	"fmt"
+	"github.com/fatih/color"
 	"github.com/google/go-github/github"
 	"sync"
 )
@@ -15,7 +15,8 @@ func Init() {
 	user, _, error := client.Users.Get(context.Background(), username)
 
 	if error != nil {
-		fmt.Println(error)
+		color.Red(error.Error())
+		return
 	}
 
 	opt := &github.RepositoryListOptions{
@@ -25,7 +26,8 @@ func Init() {
 	repos, _, err := client.Repositories.List(context.Background(), username, opt)
 
 	if err != nil {
-		fmt.Println(err)
+		color.Red(err.Error())
+		return
 	}
 
 	var wg sync.WaitGroup
