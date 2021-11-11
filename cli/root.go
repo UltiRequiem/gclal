@@ -3,15 +3,14 @@ package cli
 import (
 	"context"
 	"fmt"
-	"strings"
-	"sync"
-
 	"github.com/fatih/color"
 	"github.com/google/go-github/github"
+	"strings"
+	"sync"
 )
 
 func Init() {
-	username := getParams()
+	username, ssh := getParams()
 
 	if username == "default" {
 		color.Red("Please enter a username.")
@@ -53,7 +52,16 @@ func Init() {
 	for _, repo := range repos {
 		go func(r *github.Repository, wg *sync.WaitGroup) {
 			defer wg.Done()
-			err := cloneRepository(*r.GitURL, *r.Name)
+
+			url := ""
+
+			if ssh {
+				url = *r.SSHURL
+			} else {
+				url = *r.GitURL
+			}
+
+			err := cloneRepository(url, *r.Name)
 
 			if err != nil {
 				failedRepos = append(failedRepos, err.Error())
