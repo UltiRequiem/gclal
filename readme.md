@@ -29,6 +29,8 @@ gclal --username UltiRequiem --ssh true --apiKey YOUR_API_KEY
 go install github.com/UltiRequiem/gclal@latest
 ```
 
+Or use a binary from [releases](https://github.com/UltiRequiem/gclal/releases/latest).
+
 ## FAQ
 
 - Why `gclal`?
