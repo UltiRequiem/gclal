@@ -1,8 +1,14 @@
 package cli
 
 import (
+	"fmt"
+
 	"github.com/fatih/color"
 	"github.com/go-git/go-git/v5"
+)
+
+const (
+  VERSION = "0.0.1"
 )
 
 func cloneRepository(url, name string) {
@@ -16,4 +22,10 @@ func cloneRepository(url, name string) {
 	}
 
 	color.Green("%s cloned successfully\n", name)
+}
+
+func printHelp() {
+	helpMessage := `gclal %s`
+
+	color.Green(fmt.Sprintf(helpMessage, VERSION))
 }

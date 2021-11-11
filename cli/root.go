@@ -13,7 +13,7 @@ func Init() {
 	username := getParams()
 
 	if username == "default" {
-		color.Blue("Please enter a username.")
+		color.Red("Please enter a username.")
 		return
 	}
 
