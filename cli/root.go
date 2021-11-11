@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/fatih/color"
@@ -42,17 +43,26 @@ func Init() {
 		return
 	}
 
-	color.Green(fmt.Sprintf("About to clone %d repos.", len(repos)))
+	color.Green(fmt.Sprintf("About to clone %d repos!", len(repos)))
 
 	var wg sync.WaitGroup
 	wg.Add(len(repos))
 
+	failedRepos := []string{}
+
 	for _, repo := range repos {
 		go func(r *github.Repository, wg *sync.WaitGroup) {
 			defer wg.Done()
-			cloneRepository(*r.GitURL, *r.Name)
+			err := cloneRepository(*r.GitURL, *r.Name)
+
+			if err != nil {
+				failedRepos = append(failedRepos, err.Error())
+			}
+
 		}(repo, &wg)
 	}
 
 	wg.Wait()
+
+	color.Blue(fmt.Sprintf("There was a problem while cloning: [%s]. \n", strings.Join(failedRepos, " ")))
 }
