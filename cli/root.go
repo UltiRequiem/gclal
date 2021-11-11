@@ -5,21 +5,34 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/google/go-github/github"
+	"golang.org/x/oauth2"
 	"strings"
 	"sync"
 )
 
 func Init() {
-	username, ssh := getParams()
+	username, ssh, apiKey := getParams()
+
+	ctx := context.Background()
+
+	var client *github.Client
+
+	if apiKey != "" {
+		ts := oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: apiKey},
+		)
+
+		client = github.NewClient(oauth2.NewClient(ctx, ts))
+	} else {
+		client = github.NewClient(nil)
+	}
 
 	if username == "default" {
 		color.Red("Please enter a username.")
 		return
 	}
 
-	client := github.NewClient(nil)
-
-	user, _, error := client.Users.Get(context.Background(), username)
+	user, _, error := client.Users.Get(ctx, username)
 
 	if error != nil {
 		color.Red(error.Error())
@@ -31,11 +44,7 @@ func Init() {
 		return
 	}
 
-	opt := &github.RepositoryListOptions{
-		ListOptions: github.ListOptions{PerPage: *user.PublicRepos},
-	}
-
-	repos, _, err := client.Repositories.List(context.Background(), username, opt)
+	err, repos := getAllRepositories(user, client, username)
 
 	if err != nil {
 		color.Red(err.Error())
@@ -61,10 +70,11 @@ func Init() {
 				url = *r.GitURL
 			}
 
-			err := cloneRepository(url, *r.Name)
+			name, err := cloneRepository(url, *r.Name)
 
 			if err != nil {
-				failedRepos = append(failedRepos, err.Error())
+				failedRepos = append(failedRepos, name)
+				fmt.Println(err)
 			}
 
 		}(repo, &wg)
@@ -72,5 +82,5 @@ func Init() {
 
 	wg.Wait()
 
-	color.Blue(fmt.Sprintf("There was a problem while cloning: [%s]. \n", strings.Join(failedRepos, " ")))
+	color.Blue(fmt.Sprintf("There was a problem while cloning:\n [%s]. \n", strings.Join(failedRepos, " ")))
 }
