@@ -35,9 +35,11 @@ func getAllRepositories(user *github.User, client *github.Client, username strin
 
 		if *user.PublicRepos-reposCount > 100 {
 			reposToGet = 100
+			reposCount -= 100
 			page += 1
 		} else {
 			reposToGet = *user.PublicRepos - reposCount
+			reposCount -= reposCount
 		}
 
 		opt := &github.RepositoryListOptions{
